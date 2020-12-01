@@ -13,25 +13,47 @@ class CommunityList extends Component {
 
     this.state = {
       communities: null,
-      filteredCommunities : [],
+      filteredCommunities: [],
       searchText: ''
     };
   }
 
   componentDidMount() {
-    const getCommunities = async () => {
-      const response = await new CommunitiesApi().getCommunities();
-      this.setState({
-        communities: response.data.communities,
-      });
+    var communities = []
+    for (let index = 0; index < 7; index++) {
+      communities.push({
+        name: "Community " + (index + 1),
+        communityId: 'a' + index,
+        district: 'Occaecat commodoamet deserunt elit utirure commodo enimsit id nostrud.'
+      })
     }
-    getCommunities();
+    try {
+      var info = localStorage.getItem("userInfo");
+      if (info) {
+        const getCommunities = async () => {
+          const response = await new CommunitiesApi().getCommunities();
+          console.log("response.data.communities:")
+          console.log(response)
+          this.setState({
+            communities: response.data.communities,
+          });
+        }
+        getCommunities();
+      } else {
+        this.setState({
+          communities: communities,
+        });
+      }
+    } catch {
+      console.log("Cannot find info from localStorage");
+    }
+
   }
 
-  handleSearchText = (e) =>{
+  handleSearchText = (e) => {
     const searchText = e.target.value.trim().toLowerCase();
-    const filteredCommunities = [...this.state.communities].filter((c)=>c.name.toLowerCase().includes(searchText))      
-    this.setState({searchText : e.target.value, filteredCommunities})
+    const filteredCommunities = [...this.state.communities].filter((c) => c.name.toLowerCase().includes(searchText))
+    this.setState({ searchText: e.target.value, filteredCommunities })
   }
 
   render() {
@@ -40,9 +62,9 @@ class CommunityList extends Component {
 
     return (
       <Container>
-          <div className="input-group mt-4 mx-auto" style={{maxWidth: 360}}>
-            <input type="text" className="form-control"  placeholder="Search Communities.." value={this.state.searchText} onChange={this.handleSearchText}/>
-            </div>
+        <div className="input-group mt-4 mx-auto" style={{ maxWidth: 360 }}>
+          <input type="text" className="form-control" placeholder="Search Communities.." value={this.state.searchText} onChange={this.handleSearchText} />
+        </div>
         <PageRow>
           {this.state.communities ? (
             renderCommunities.length ? renderCommunities.map((community) => {
@@ -59,7 +81,7 @@ class CommunityList extends Component {
                   }
                 />
               </Column>
-            }) : <div className="mx-auto"><span style={{fontSize: 24}}>Community Not Found !!</span></div> 
+            }) : <div className="mx-auto"><span style={{ fontSize: 24 }}>Community Not Found !!</span></div>
           ) : ''}
         </PageRow>
       </Container>

@@ -6,7 +6,8 @@ import CommunityList from "./columns/community-list.component";
 const HomePage = ({ currentUser }) => (
   <div>
     {!currentUser && <HeroText />}
-    {currentUser ? <CommunityList /> : ''}
+    {/* {currentUser ? <CommunityList /> : ''} */}
+    <CommunityList />
   </div>
 );
 
